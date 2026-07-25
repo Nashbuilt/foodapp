@@ -1,4 +1,4 @@
-﻿const SUPABASE_URL = "https://qakqtrdmeivnaessvido.supabase.co";
+const SUPABASE_URL = "https://qakqtrdmeivnaessvido.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_pXD5YsTfZqpwaauLOJxqEQ_W8mP_bFy";
 const HOUSEHOLD_ID = "2c9af8db-e2fd-45e1-85f3-4153e32af005";
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
@@ -563,7 +563,7 @@ function createMealCard(meal, mode, existingMatch) {
   card.querySelector(".meal-meta").textContent = meal.category;
 
   const favouriteButton = card.querySelector(".favourite-button");
-  favouriteButton.textContent = meal.favourite ? "â˜…" : "â˜†";
+  favouriteButton.textContent = meal.favourite ? "★" : "☆";
   favouriteButton.classList.toggle("active", Boolean(meal.favourite));
   favouriteButton.addEventListener("click", () => toggleFavourite(meal.id));
 
@@ -593,7 +593,7 @@ function renderIngredientMatchList(list, match) {
   match.ingredients.forEach(item => {
     const row = document.createElement("li");
     row.className = item.available ? "available" : "missing";
-    row.textContent = `${item.available ? "âœ“" : "âœ—"} ${item.name}`;
+    row.textContent = `${item.available ? "✓" : "✗"} ${item.name}`;
     list.append(row);
   });
 }
@@ -752,7 +752,7 @@ function wasCookedRecently(meal) {
 function getMealStats(meal) {
   const cookedCount = Number(meal.cookedCount || 0);
   const lastCooked = meal.lastCooked ? `Last cooked: ${formatDate(meal.lastCooked)}` : "Last cooked: never";
-  return `${lastCooked} Â· Cooked ${cookedCount} ${cookedCount === 1 ? "time" : "times"}`;
+  return `${lastCooked} · Cooked ${cookedCount} ${cookedCount === 1 ? "time" : "times"}`;
 }
 
 function getExistingMealStat(id, key, fallback) {
