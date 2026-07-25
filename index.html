@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#4aa3df">
+    <title>Food Items</title>
+    <link rel="stylesheet" href="styles.css?v=8">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Shopping list</p>
+          <h1>Food Items</h1>
+        </div>
+        <div class="summary" aria-live="polite">
+          <span id="totalCount">0 items</span>
+          <strong id="expiringCount">0 soon</strong>
+        </div>
+      </header>
+
+      <section class="auth-panel" aria-labelledby="authTitle">
+        <div>
+          <h2 id="authTitle">Household sync</h2>
+          <p id="authStatus" class="auth-status">Checking sign-in status...</p>
+        </div>
+        <form id="authForm" class="auth-form">
+          <input id="authEmail" type="email" autocomplete="email" placeholder="Email for magic link" required>
+          <button class="secondary-button" type="submit">Send link</button>
+        </form>
+        <div class="auth-actions">
+          <button id="importLocalButton" class="secondary-button" type="button">Upload local data</button>
+          <button id="signOutButton" class="text-button" type="button" hidden>Sign out</button>
+        </div>
+      </section>
+      <nav class="app-nav" aria-label="App sections">
+        <button class="nav-button active" type="button" data-page="inventoryPage">Inventory</button>
+        <button class="nav-button" type="button" data-page="mealsPage">Meals & Ideas</button>
+        <button class="nav-button" type="button" data-page="ideasPage">What Can We Eat?</button>
+      </nav>
+
+      <section id="inventoryPage" class="app-page active">
+        <section class="dashboard-section" aria-labelledby="dashboardTitle">
+          <div class="section-head">
+            <h2 id="dashboardTitle">Storage dashboard</h2>
+          </div>
+          <div class="dashboard-chart" aria-label="Food items by location">
+            <div id="locationPie" class="location-pie" role="img" aria-label="No items yet"></div>
+            <div id="locationLegend" class="location-legend"></div>
+          </div>
+          <div id="dashboardGrid" class="dashboard-grid" aria-live="polite"></div>
+        </section>
+
+        <section class="quick-panel" aria-labelledby="addItemTitle">
+          <div class="section-head">
+            <h2 id="addItemTitle">Add food</h2>
+            <button class="icon-button" id="resetFormButton" type="button" title="Clear form" aria-label="Clear form">
+              <span aria-hidden="true">&#8634;</span>
+            </button>
+          </div>
+
+          <form id="itemForm" class="item-form">
+            <input type="hidden" id="itemId">
+            <label>
+              <span>Food name</span>
+              <input id="foodName" name="foodName" type="text" list="commonFoodOptions" autocomplete="off" required placeholder="Milk, spinach, leftovers">
+            </label>
+            <label>
+              <span>Expiry date</span>
+              <input id="expiryDate" name="expiryDate" type="date" required>
+            </label>
+            <label>
+              <span>Location</span>
+              <select id="location" name="location">
+                <option>Chest Freezer</option>
+                <option>Freezer</option>
+                <option>Fridge</option>
+                <option>Cupboard</option>
+                <option>Snacks</option>
+              </select>
+            </label>
+            <label>
+              <span>Notes</span>
+              <input id="notes" name="notes" type="text" placeholder="Half pack, opened Monday">
+            </label>
+            <button id="saveItemButton" class="primary-button" type="submit">Add item</button>
+          </form>
+          <datalist id="commonFoodOptions"></datalist>
+        </section>
+
+        <section class="toolbar" aria-label="Inventory controls">
+          <div class="search-wrap">
+            <label for="searchInput">Search</label>
+            <input id="searchInput" type="search" placeholder="Find food">
+          </div>
+          <div class="control-grid">
+            <label>
+              <span>View</span>
+              <select id="filterSelect">
+                <option value="all">All items</option>
+                <option value="soon">Expiring soon</option>
+                <option value="expired">Expired</option>
+                <option value="ok">Still fresh</option>
+              </select>
+            </label>
+            <label>
+              <span>Sort</span>
+              <select id="sortSelect">
+                <option value="expiryAsc">Expiry soonest</option>
+                <option value="expiryDesc">Expiry latest</option>
+                <option value="nameAsc">Name A-Z</option>
+                <option value="locationAsc">Location</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="inventory-section" aria-labelledby="inventoryTitle">
+          <div class="section-head">
+            <h2 id="inventoryTitle">Inventory</h2>
+            <button id="seedButton" class="secondary-button" type="button">Add samples</button>
+          </div>
+          <div id="inventoryList" class="inventory-list"></div>
+          <p id="emptyState" class="empty-state" hidden>No matching items yet.</p>
+        </section>
+
+        <section class="common-section" aria-labelledby="commonTitle">
+          <div class="section-head">
+            <h2 id="commonTitle">Common foods</h2>
+          </div>
+          <form id="commonForm" class="common-form">
+            <input id="commonFoodInput" type="text" autocomplete="off" placeholder="Add a common food" required>
+            <button class="secondary-button" type="submit">Add</button>
+          </form>
+          <div id="commonFoodList" class="chip-list" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section id="mealsPage" class="app-page" hidden>
+        <section class="quick-panel meal-panel" aria-labelledby="mealFormTitle">
+          <div class="section-head">
+            <h2 id="mealFormTitle">Add meal</h2>
+            <button class="icon-button" id="resetMealButton" type="button" title="Clear meal" aria-label="Clear meal">
+              <span aria-hidden="true">&#8634;</span>
+            </button>
+          </div>
+
+          <form id="mealForm" class="meal-form">
+            <input type="hidden" id="mealId">
+            <label>
+              <span>Meal name</span>
+              <input id="mealName" type="text" required placeholder="Chicken pasta">
+            </label>
+            <label>
+              <span>Category</span>
+              <select id="mealCategory">
+                <option>Breakfast</option>
+                <option>Lunch</option>
+                <option selected>Dinner</option>
+                <option>Snack</option>
+              </select>
+            </label>
+            <div class="ingredient-builder">
+              <label>
+                <span>Add ingredient</span>
+                <input id="mealIngredientInput" type="text" list="commonFoodOptions" autocomplete="off" placeholder="Chicken or Courgette">
+              </label>
+              <button id="addMealIngredientButton" class="secondary-button" type="button">Add ingredient</button>
+              <div id="mealIngredientList" class="chip-list"></div>
+            </div>
+            <label>
+              <span>Notes</span>
+              <textarea id="mealNotes" rows="3" placeholder="Cook for 45 minutes."></textarea>
+            </label>
+            <label class="check-row">
+              <input id="mealFavourite" type="checkbox">
+              <span>Favourite meal</span>
+            </label>
+            <button id="saveMealButton" class="primary-button" type="submit">Save meal</button>
+          </form>
+        </section>
+
+        <section class="toolbar" aria-label="Meal controls">
+          <div class="search-wrap">
+            <label for="mealSearchInput">Search meals</label>
+            <input id="mealSearchInput" type="search" placeholder="Find a meal">
+          </div>
+          <label class="check-row filter-check">
+            <input id="favouritesOnlyFilter" type="checkbox">
+            <span>Show favourites only</span>
+          </label>
+        </section>
+
+        <section class="inventory-section" aria-labelledby="mealListTitle">
+          <div class="section-head">
+            <h2 id="mealListTitle">Saved meals</h2>
+          </div>
+          <div id="mealList" class="meal-list"></div>
+          <p id="mealEmptyState" class="empty-state" hidden>No meals saved yet.</p>
+        </section>
+      </section>
+
+      <section id="ideasPage" class="app-page" hidden>
+        <section class="quick-panel picker-panel" aria-labelledby="ideasTitle">
+          <div class="section-head">
+            <h2 id="ideasTitle">What Can We Eat?</h2>
+          </div>
+          <div class="picker-controls">
+            <button id="pickDinnerButton" class="primary-button" type="button">Pick Dinner</button>
+            <label class="check-row">
+              <input id="pickerFavouritesOnly" type="checkbox">
+              <span>Favourites only</span>
+            </label>
+            <label>
+              <span>Hide cooked in last</span>
+              <select id="recentDaysSelect">
+                <option value="0">Show all</option>
+                <option value="3">3 days</option>
+                <option value="7">7 days</option>
+              </select>
+            </label>
+          </div>
+          <div id="suggestionBox" class="suggestion-box" hidden></div>
+        </section>
+
+        <section class="needed-section" aria-labelledby="neededTitle">
+          <div class="section-head">
+            <h2 id="neededTitle">Needed list</h2>
+            <button id="clearNeededButton" class="secondary-button" type="button">Clear</button>
+          </div>
+          <div id="neededList" class="chip-list"></div>
+          <p id="neededEmptyState" class="empty-state">No missing ingredients added yet.</p>
+        </section>
+
+        <section class="ideas-groups" aria-label="Meal availability">
+          <div class="idea-group">
+            <h2>Can Make Now</h2>
+            <div id="canMakeList" class="meal-list"></div>
+          </div>
+          <div class="idea-group">
+            <h2>Almost Can Make</h2>
+            <div id="almostMakeList" class="meal-list"></div>
+          </div>
+          <div class="idea-group">
+            <h2>Not Available</h2>
+            <div id="notAvailableList" class="meal-list"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <template id="itemTemplate">
+      <article class="food-card">
+        <div class="food-card__main">
+          <div>
+            <p class="food-name"></p>
+            <p class="food-meta"></p>
+          </div>
+          <span class="status-pill"></span>
+        </div>
+        <div class="expiry-panel">
+          <span class="expiry-label">Expires</span>
+          <strong class="expiry-date"></strong>
+        </div>
+        <p class="food-notes"></p>
+        <label class="added-date-control">
+          <span>Added</span>
+          <input class="added-date-input" type="date">
+        </label>
+        <div class="food-card__actions">
+          <button class="text-button edit-button" type="button">Edit</button>
+          <button class="text-button danger remove-button" type="button">Remove</button>
+        </div>
+      </article>
+    </template>
+
+    <template id="mealTemplate">
+      <article class="meal-card">
+        <div class="meal-card__head">
+          <div>
+            <p class="meal-name"></p>
+            <p class="meal-meta"></p>
+          </div>
+          <button class="favourite-button" type="button" aria-label="Toggle favourite"></button>
+        </div>
+        <div class="match-panel"></div>
+        <ul class="ingredient-match-list"></ul>
+        <p class="meal-notes"></p>
+        <p class="meal-stats"></p>
+        <div class="meal-card__actions">
+          <button class="text-button cooked-button" type="button">Cooked</button>
+          <button class="text-button missing-button" type="button">Add missing</button>
+          <button class="text-button edit-meal-button" type="button">Edit</button>
+          <button class="text-button danger delete-meal-button" type="button">Delete</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js?v=11" defer></script>
+  </body>
+</html>
+
